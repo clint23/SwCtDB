@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="SwCtDB" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="WIJ-68-WIf"/>
+                        <viewControllerLayoutGuide type="bottom" id="kM3-ac-9S5"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zmL-ee-28k">
+                                <rect key="frame" x="26" y="60" width="156.5" height="30"/>
+                                <color key="backgroundColor" red="0.1137254902" green="0.59999999999999998" blue="0.96078431369999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" id="zrU-0a-W0v"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <state key="normal" title="创建表"/>
+                                <connections>
+                                    <action selector="createTable:" destination="BYZ-38-t0r" eventType="touchUpInside" id="arv-c7-r3c"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1TY-2R-jam">
+                                <rect key="frame" x="192.5" y="60" width="156.5" height="30"/>
+                                <color key="backgroundColor" red="0.1137254902" green="0.59999999999999998" blue="0.96078431369999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <state key="normal" title="删除表"/>
+                                <connections>
+                                    <action selector="dropTable:" destination="BYZ-38-t0r" eventType="touchUpInside" id="QVE-cQ-BeL"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6fk-tq-1ae">
+                                <rect key="frame" x="26" y="110" width="156.5" height="30"/>
+                                <color key="backgroundColor" red="0.1137254902" green="0.59999999999999998" blue="0.96078431369999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <state key="normal" title="添加数据"/>
+                                <connections>
+                                    <action selector="addData:" destination="BYZ-38-t0r" eventType="touchUpInside" id="8rY-sI-Psw"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cHT-ns-TqP">
+                                <rect key="frame" x="192.5" y="110" width="156.5" height="30"/>
+                                <color key="backgroundColor" red="0.1137254902" green="0.59999999999999998" blue="0.96078431369999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <state key="normal" title="删除数据"/>
+                                <connections>
+                                    <action selector="cutData:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ui3-hM-dRn"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="92I-vF-QKP">
+                                <rect key="frame" x="26" y="160" width="156.5" height="30"/>
+                                <color key="backgroundColor" red="0.1137254902" green="0.59999999999999998" blue="0.96078431369999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <state key="normal" title="修改数据"/>
+                                <connections>
+                                    <action selector="changeData:" destination="BYZ-38-t0r" eventType="touchUpInside" id="iCL-zg-osc"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="635-38-fr5">
+                                <rect key="frame" x="192.5" y="160" width="156.5" height="30"/>
+                                <color key="backgroundColor" red="0.1137254902" green="0.59999999999999998" blue="0.96078431369999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <state key="normal" title="查询数据"/>
+                                <connections>
+                                    <action selector="searchData:" destination="BYZ-38-t0r" eventType="touchUpInside" id="daS-8u-J2M"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="zmL-ee-28k" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="10" id="0G0-WF-i2H"/>
+                            <constraint firstItem="1TY-2R-jam" firstAttribute="bottom" secondItem="zmL-ee-28k" secondAttribute="bottom" id="0fb-SC-2Hg"/>
+                            <constraint firstItem="cHT-ns-TqP" firstAttribute="bottom" secondItem="6fk-tq-1ae" secondAttribute="bottom" id="5aW-Mh-Hgn"/>
+                            <constraint firstItem="635-38-fr5" firstAttribute="bottom" secondItem="92I-vF-QKP" secondAttribute="bottom" id="Aex-ar-46t"/>
+                            <constraint firstItem="6fk-tq-1ae" firstAttribute="height" secondItem="zmL-ee-28k" secondAttribute="height" id="Af4-Bz-a87"/>
+                            <constraint firstItem="zmL-ee-28k" firstAttribute="top" secondItem="WIJ-68-WIf" secondAttribute="bottom" constant="40" id="B4U-Pm-erc"/>
+                            <constraint firstItem="cHT-ns-TqP" firstAttribute="leading" secondItem="1TY-2R-jam" secondAttribute="leading" id="CGo-Oi-Yjl"/>
+                            <constraint firstItem="cHT-ns-TqP" firstAttribute="trailing" secondItem="1TY-2R-jam" secondAttribute="trailing" id="D3J-6S-7Hb"/>
+                            <constraint firstItem="6fk-tq-1ae" firstAttribute="top" secondItem="zmL-ee-28k" secondAttribute="bottom" constant="20" id="Ecg-x7-FMZ"/>
+                            <constraint firstItem="635-38-fr5" firstAttribute="trailing" secondItem="cHT-ns-TqP" secondAttribute="trailing" id="FG4-Ki-scK"/>
+                            <constraint firstItem="1TY-2R-jam" firstAttribute="width" secondItem="zmL-ee-28k" secondAttribute="width" id="MTX-cZ-yob"/>
+                            <constraint firstItem="1TY-2R-jam" firstAttribute="leading" secondItem="zmL-ee-28k" secondAttribute="trailing" constant="10" id="SUz-Ko-KTd"/>
+                            <constraint firstItem="92I-vF-QKP" firstAttribute="height" secondItem="6fk-tq-1ae" secondAttribute="height" id="Xnl-VP-Cfa"/>
+                            <constraint firstItem="635-38-fr5" firstAttribute="top" secondItem="92I-vF-QKP" secondAttribute="top" id="aP4-I8-tin"/>
+                            <constraint firstItem="92I-vF-QKP" firstAttribute="leading" secondItem="6fk-tq-1ae" secondAttribute="leading" id="k2Q-ec-VHg"/>
+                            <constraint firstItem="6fk-tq-1ae" firstAttribute="trailing" secondItem="zmL-ee-28k" secondAttribute="trailing" id="kSc-6x-TW8"/>
+                            <constraint firstItem="92I-vF-QKP" firstAttribute="top" secondItem="6fk-tq-1ae" secondAttribute="bottom" constant="20" id="kmX-hb-KLh"/>
+                            <constraint firstItem="1TY-2R-jam" firstAttribute="top" secondItem="zmL-ee-28k" secondAttribute="top" id="m8i-3N-wF1"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="1TY-2R-jam" secondAttribute="trailing" constant="10" id="ntL-0c-1Ti"/>
+                            <constraint firstItem="6fk-tq-1ae" firstAttribute="leading" secondItem="zmL-ee-28k" secondAttribute="leading" id="ocJ-xt-ehi"/>
+                            <constraint firstItem="cHT-ns-TqP" firstAttribute="top" secondItem="6fk-tq-1ae" secondAttribute="top" id="qtL-PP-9s5"/>
+                            <constraint firstItem="92I-vF-QKP" firstAttribute="trailing" secondItem="6fk-tq-1ae" secondAttribute="trailing" id="wcF-pb-a02"/>
+                            <constraint firstItem="635-38-fr5" firstAttribute="leading" secondItem="cHT-ns-TqP" secondAttribute="leading" id="yHN-z4-LTa"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="10" y="101"/>
+        </scene>
+    </scenes>
+</document>
