@@ -36,6 +36,45 @@ public enum OrderType: String {
     case desc = "desc"
 }
 
+/// 条件表达式
+///
+/// - Parameters:
+///   - key: 键
+///   - type: 条件类型
+///   - value: 值
+/// - Returns: 条件表达式字符串
+public func con(_ key: String, _ type: ConType, _ value: Any) -> String {
+    var result = "\(key) \(type.rawValue) \(value)";
+    if (value is String) || (value is NSString) {
+        result = "\(key) \(type.rawValue) '\(value)'"
+    }
+    return result
+}
+
+/// 设置表达式
+///
+/// - Parameters:
+///   - key: 键
+///   - value: 值
+/// - Returns: 设置表达式字符串
+public func set(_ key: String, _ value: Any) -> String {
+    var result = "\(key) = \(value)";
+    if (value is String) || (value is NSString) {
+        result = "\(key) = '\(value)'"
+    }
+    return result
+}
+
+/// 排序表达式
+///
+/// - Parameters:
+///   - key: 键
+///   - type: 排序类型
+/// - Returns: 排序表达式字符串
+public func ord(_ key: String, _ type: OrderType) -> String {
+    return "\(key) \(type.rawValue)"
+}
+
 // 以模型化为核心操作sqlite，表对应数据模型，在执行静态初始化方法后，将自动查询所有的表并进行表的更新，在对应数据模型类增加属性，将自动添加列并给定默认值
 /// 在数据模型类删减属性则自动删减表对应类，对于支持的数据类型，目前只支持Int，Float，Double，String类型，请以这些类型为存储标准，对于非支持类型，数据表
 /// 会创建对应列但会置为null
@@ -44,25 +83,19 @@ public enum OrderType: String {
 public class SwCtDB: NSObject {
     private static let instance = SwCtDB()
     let id = "_id"
+    private static let tableSign = "tableSign"
     private let tmpTableName = "tmp"
-    private var prefix = ""
     private var tableColumns: [String : [String : ColumnType]] = [:]
     private var db = OpaquePointer.init(bitPattern: 0)
-    
     
     /// 静态初始化方法，这里将进行列表更新处理操作，自动删除或增加表列，自动删除多余的表，在表迁移操作时要特别注意
     ///
     /// - Returns: 单例对象
     public static func manager() -> SwCtDB{
-        let fullName = NSStringFromClass(SwCtDB.self)
-        let subName = String(describing: SwCtDB.self)
-        
-        instance.prefix = fullName.replacingOccurrences(of: subName, with: "", range: fullName.range(of: subName, options: .backwards))
         instance.tableColumns.removeAll()
         let tableNames = instance.exportTableNames()
         tableNames.forEach { (tableName) in
-            
-            if let cla = NSClassFromString(instance.prefix + tableName) {
+            if let cla = NSClassFromString(cName(tableName)) {
                 instance.inspectColumn(cla)
                 instance.tableColumns[tableName] = instance.exportPropertiesAndTypes(cla)
             }else {
@@ -100,12 +133,12 @@ public extension SwCtDB {
     /// - Returns: 是否成功创建
     @discardableResult private func createTable(_ cla: AnyClass) -> Bool {
         var result = true
-        if !tableColumns.keys.contains(String(describing:cla)) {
+        if !tableColumns.keys.contains(tName(cla)) {
             let properties = self.exportProperties(cla)
-            let sql = "create table if not exists \(String(describing:cla)) (\(id) integer primary key autoincrement, \((properties as NSArray).componentsJoined(by: ", ")))"
+            let sql = "create table if not exists \(tName(cla)) (\(id) integer primary key autoincrement, \((properties as NSArray).componentsJoined(by: ", ")))"
             result = (sqlite3_exec(db, sql, nil, nil, nil) == SQLITE_OK)
             if result {
-                tableColumns[String(describing:cla)] = exportPropertiesAndTypes(cla)
+                tableColumns[tName(cla)] = exportPropertiesAndTypes(cla)
             }
         }
         return result
@@ -148,46 +181,6 @@ public extension SwCtDB {
 
 // MARK: - 数据操作相关
 extension SwCtDB {
-    
-    /// 条件表达式
-    ///
-    /// - Parameters:
-    ///   - key: 键
-    ///   - type: 条件类型
-    ///   - value: 值
-    /// - Returns: 条件表达式字符串
-    public func con(_ key: String, _ type: ConType, _ value: Any) -> String {
-        var result = "\(key) \(type.rawValue) \(value)";
-        if (value is String) || (value is NSString) {
-            result = "\(key) \(type.rawValue) '\(value)'"
-        }
-        return result
-    }
-    
-    /// 设置表达式
-    ///
-    /// - Parameters:
-    ///   - key: 键
-    ///   - value: 值
-    /// - Returns: 设置表达式字符串
-    public func set(_ key: String, _ value: Any) -> String {
-        var result = "\(key) = \(value)";
-        if (value is String) || (value is NSString) {
-            result = "\(key) = '\(value)'"
-        }
-        return result
-    }
-    
-    /// 排序表达式
-    ///
-    /// - Parameters:
-    ///   - key: 键
-    ///   - type: 排序类型
-    /// - Returns: 排序表达式字符串
-    public func ord(_ key: String, _ type: OrderType) -> String {
-        return "\(key) \(type.rawValue)"
-    }
-    
     /// 插入数据，这里要插入的数据必须是同一种类型，且继承于CtTable
     ///
     /// - Parameter datas: 待插入的数据源
@@ -197,7 +190,7 @@ extension SwCtDB {
         if datas.count > 0 {
             if createTable(datas.first!.classForCoder) {
                 let columns = exportTableColumns(datas.first!.classForCoder)
-                let each = tableColumns[String.init(describing: datas.first!.classForCoder)]
+                let each = tableColumns[tName(datas.first!.classForCoder)]
                 var places = "?"
                 
                 var texts: [String : Int] = [:]
@@ -221,7 +214,7 @@ extension SwCtDB {
                 
                 if sqlite3_exec(db, "begin", nil, nil, nil) == SQLITE_OK {
                     var stmt = OpaquePointer.init(bitPattern: 0)
-                    let sql = "insert into \(String.init(describing: datas.first!.classForCoder)) values (\(places))"
+                    let sql = "insert into \(tName(datas.first!.classForCoder)) values (\(places))"
                     sqlite3_prepare_v2(db, sql, -1, &stmt, nil)
                     datas.forEach { (data) in
                         texts.forEach({ (arg) in
@@ -261,7 +254,7 @@ extension SwCtDB {
     @discardableResult public func delete(_ cla: AnyClass, cons: [String]? = nil) -> Bool {
         var result = false
         if createTable(cla) {
-            var sql = "delete from \(String(describing:cla))";
+            var sql = "delete from \(tName(cla))";
             if cons != nil {
                 if cons!.count > 0 {
                     sql.append(" where \((cons! as NSArray).componentsJoined(by: " and "))")
@@ -282,7 +275,7 @@ extension SwCtDB {
     @discardableResult public func update(_ cla: AnyClass,  sets: [String], cons: [String]? = nil) -> Bool {
         var result = false
         if createTable(cla) {
-            var sql = "update \(String(describing:cla))";
+            var sql = "update \(tName(cla))";
             if sets.count > 0 {
                 sql.append(" set \((sets as NSArray).componentsJoined(by: ", "))")
             }
@@ -304,14 +297,14 @@ extension SwCtDB {
     ///   - cons: 条件表达式组
     ///   - ords: 排序表达式组
     /// - Returns: 查询出来的数据
-    @discardableResult public func select(_ cla: AnyClass, keys: [String]? = nil, cons: [String]? = nil, ords: [String]? = nil) -> [CtTable] {
-        var datas: [CtTable] = []
+    @discardableResult public func select<T: CtTable>(_ cla: T.Type, keys: [String]? = nil, cons: [String]? = nil, ords: [String]? = nil) -> [T] {
+        var datas: [T] = []
         if createTable(cla) {
             var key = "*"
             if keys != nil {
                 key = (keys! as NSArray).componentsJoined(by: ", ")
             }
-            var sql = "select \(key) from \(String(describing:cla))"
+            var sql = "select \(key) from \(tName(cla))"
             if cons != nil {
                 if cons!.count > 0 {
                     sql.append(" where \((cons! as NSArray).componentsJoined(by: " and "))")
@@ -324,11 +317,11 @@ extension SwCtDB {
             }
             var stmt = OpaquePointer.init(bitPattern: 0)
             if sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK {
-                var each = tableColumns[String.init(describing: cla)]
+                var each = tableColumns[tName(cla)]
                 each!["iD"] = .integer
                 var indexs: [String : CInt] = [:]
                 while (sqlite3_step(stmt) == SQLITE_ROW) {
-                    let tmp = (cla as! CtTable.Type).init()
+                    let tmp = T.init()
                     if indexs.count == 0 {
                         let columnNum = sqlite3_column_count(stmt)
                         for index in 0..<columnNum {
@@ -388,7 +381,7 @@ public extension SwCtDB {
     public func exportTableColumns(_ cla: AnyClass) -> [String] {
         var columns: [String] = []
         if self.open() {
-            let sql = "PRAGMA table_info([\(String(describing:cla))])"
+            let sql = "PRAGMA table_info([\(tName(cla))])"
             var stmt = OpaquePointer.init(bitPattern: 0)
             let prepare_result = sqlite3_prepare_v2(db, sql, -1, &stmt, nil)
             if prepare_result == SQLITE_OK {
@@ -412,14 +405,14 @@ public extension SwCtDB {
         let addColumns = (properties as NSArray).filtered(using: NSPredicate.init(format: "NOT (SELF IN %@)", columns)) as! [String]
         addColumns.forEach { (column) in
             let type = propertiesAndTypes[column]
-            var sql = "alter table \(String(describing:cla)) add column \(column)"
+            var sql = "alter table \(tName(cla)) add column \(column)"
             switch type! {
             case .text:
-                sql = "alter table \(String(describing:cla)) add column \(column) default ''"
+                sql = "alter table \(tName(cla)) add column \(column) default ''"
             case .real:
-                sql = "alter table \(String(describing:cla)) add column \(column) default 0.0"
+                sql = "alter table \(tName(cla)) add column \(column) default 0.0"
             case .integer:
-                sql = "alter table \(String(describing:cla)) add column \(column) default 0"
+                sql = "alter table \(tName(cla)) add column \(column) default 0"
             default:
                 break
             }
@@ -428,10 +421,18 @@ public extension SwCtDB {
         
         let cutColumns = (columns as NSArray).filtered(using: NSPredicate.init(format: "NOT (SELF IN %@)", properties)) as! [String]
         if cutColumns.count > 0 {
-            copyTable(String(describing:cla), columns: properties, to: tmpTableName)
-            dropTable(String(describing:cla))
-            renameTable(tmpTableName, to: String(describing:cla))
+            copyTable(tName(cla), columns: properties, to: tmpTableName)
+            dropTable(tName(cla))
+            renameTable(tmpTableName, to: tName(cla))
         }
+    }
+    
+    private func tName(_ cla: AnyClass) -> String {
+        return cla.description().replacingOccurrences(of: ".", with: SwCtDB.tableSign)
+    }
+    
+    private static func cName(_ name: String) -> String {
+        return name.replacingOccurrences(of: SwCtDB.tableSign, with: ".")
     }
 }
 
@@ -486,13 +487,11 @@ extension SwCtDB {
         }
         return type
     }
-    
 }
 
 /// 表基本类，请创建数据表时继承该类，该类创建了id字段
 @objcMembers open class CtTable: NSObject {
     public var iD = 0
-    
     required override public init() {}
 }
 

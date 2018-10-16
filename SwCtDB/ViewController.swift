@@ -37,20 +37,21 @@ class ViewController: UIViewController {
     @IBAction func cutData(_ sender: UIButton) {
         let db = SwCtDB.manager()
         print(db.dbPath())
-        db.delete(AModel.self, cons: [db.con(db.id, .equal, 2)])
+        db.delete(AModel.self, cons: [con(db.id, .equal, 2)])
     }
     
     @IBAction func changeData(_ sender: UIButton) {
         let db = SwCtDB.manager()
         print(db.dbPath())
-        db.update(AModel.self, sets: [db.set("name", "changeName")], cons: [db.con(db.id, .equal, 3)])
+        db.update(AModel.self,
+                  sets: [set("name", "changeName")],
+                  cons: [con(db.id, .equal, 3)])
     }
     
     @IBAction func searchData(_ sender: UIButton) {
         let db = SwCtDB.manager()
         print(db.dbPath())
         let datas = db.select(AModel.self)
-        
         print(datas)
     }
 }
