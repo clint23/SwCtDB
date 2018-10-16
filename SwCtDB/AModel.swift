@@ -18,7 +18,7 @@ class AModel: CtTable {
     }
     
     required init() {}
-    
+
     override var description: String {
         return "\(name) \(age)"
     }

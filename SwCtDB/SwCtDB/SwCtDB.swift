@@ -490,9 +490,9 @@ extension SwCtDB {
 }
 
 /// 表基本类，请创建数据表时继承该类，该类创建了id字段
-@objcMembers public class CtTable: NSObject {
-    var iD = 0
+@objcMembers open class CtTable: NSObject {
+    public var iD = 0
     
-    required override init() {}
+    required override public init() {}
 }
 
