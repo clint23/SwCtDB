@@ -325,7 +325,7 @@ extension SwCtDB {
             var stmt = OpaquePointer.init(bitPattern: 0)
             if sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK {
                 var each = tableColumns[String.init(describing: cla)]
-                each!["id"] = .integer
+                each!["iD"] = .integer
                 var indexs: [String : CInt] = [:]
                 while (sqlite3_step(stmt) == SQLITE_ROW) {
                     let tmp = (cla as! CtTable.Type).init()
@@ -334,7 +334,7 @@ extension SwCtDB {
                         for index in 0..<columnNum {
                             indexs[String.init(cString: sqlite3_column_name(stmt, index))] = index
                         }
-                        indexs["id"] = indexs["_id"]
+                        indexs["iD"] = indexs["_id"]
                         indexs["_id"] = nil
                     }
                     let columns = indexs.keys
@@ -491,7 +491,7 @@ extension SwCtDB {
 
 /// 表基本类，请创建数据表时继承该类，该类创建了id字段
 @objcMembers class CtTable: NSObject {
-    var id = 0
+    var iD = 0
     
     required override init() {
         
