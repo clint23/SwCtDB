@@ -15,14 +15,14 @@ import SQLite3
 /// - real: 浮点型
 /// - integer: 整型
 /// - blob: 二进制型
-enum ColumnType: Int {
+public enum ColumnType: Int {
     case text = 0
     case real = 1
     case integer = 2
     case blob = 3
 }
 
-enum ConType: String {
+public enum ConType: String {
     case big = ">"
     case equal = "="
     case small = "<"
@@ -31,7 +31,7 @@ enum ConType: String {
     case notE = "!="
 }
 
-enum OrderType: String {
+public enum OrderType: String {
     case ase = "asc"
     case desc = "desc"
 }
@@ -41,7 +41,7 @@ enum OrderType: String {
 /// 会创建对应列但会置为null
 /// 无需进行表创建，删除操作，在执行增删改查相关操作时会自动创建数据表，在数据模型类删除后将自动删除数据表
 /// 创建的模型类需要继承于CtTable
-class SwCtDB: NSObject {
+public class SwCtDB: NSObject {
     private static let instance = SwCtDB()
     let id = "_id"
     private let tmpTableName = "tmp"
@@ -53,7 +53,7 @@ class SwCtDB: NSObject {
     /// 静态初始化方法，这里将进行列表更新处理操作，自动删除或增加表列，自动删除多余的表，在表迁移操作时要特别注意
     ///
     /// - Returns: 单例对象
-    static func manager() -> SwCtDB{
+    public static func manager() -> SwCtDB{
         let fullName = NSStringFromClass(SwCtDB.self)
         let subName = String(describing: SwCtDB.self)
         
@@ -72,15 +72,15 @@ class SwCtDB: NSObject {
         return instance
     }
     
-    override func copy() -> Any {
+    override public func copy() -> Any {
         return self
     }
     
-    override func mutableCopy() -> Any {
+    override public func mutableCopy() -> Any {
         return self
     }
     
-    func dbPath() -> String {
+    public func dbPath() -> String {
         let document = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
         return (document! as NSString).appendingPathComponent(Bundle.main.bundleIdentifier! + ".db")
     }
@@ -92,7 +92,7 @@ class SwCtDB: NSObject {
 
 
 // MARK: - 表操作相关
-extension SwCtDB {
+public extension SwCtDB {
     
     /// 创建数据表，该函数用于内部调用，在进行增删改查等操作时会自动执行
     ///
@@ -115,7 +115,7 @@ extension SwCtDB {
     ///
     /// - Parameter table: 表名
     /// - Returns: 是否成功删除表
-    @discardableResult func dropTable(_ table: String) -> Bool {
+    @discardableResult public func dropTable(_ table: String) -> Bool {
         let sql = "drop table if exists \(table)"
         return (sqlite3_exec(db, sql, nil, nil, nil) == SQLITE_OK)
     }
@@ -127,7 +127,7 @@ extension SwCtDB {
     ///   - columns: 列名列表
     ///   - to: 要拷贝为的表名
     /// - Returns: 是否成功拷贝表
-    @discardableResult func copyTable(_ from: String, columns: [String], to: String) -> Bool {
+    @discardableResult public func copyTable(_ from: String, columns: [String], to: String) -> Bool {
         let sql = "create table \(to) as select \((columns as NSArray).componentsJoined(by: ", ")) from \(from)"
         
         return (sqlite3_exec(db, sql, nil, nil, nil) == SQLITE_OK)
@@ -139,7 +139,7 @@ extension SwCtDB {
     ///   - from: 待重命名的表名
     ///   - to: 新命名
     /// - Returns: 是否成功重命名表
-    @discardableResult func renameTable(_ from: String, to: String) -> Bool {
+    @discardableResult public func renameTable(_ from: String, to: String) -> Bool {
         let sql = "alter table \(from) rename to \(to)"
         return (sqlite3_exec(db, sql, nil, nil, nil) == SQLITE_OK)
     }
@@ -156,7 +156,7 @@ extension SwCtDB {
     ///   - type: 条件类型
     ///   - value: 值
     /// - Returns: 条件表达式字符串
-    func con(_ key: String, _ type: ConType, _ value: Any) -> String {
+    public func con(_ key: String, _ type: ConType, _ value: Any) -> String {
         var result = "\(key) \(type.rawValue) \(value)";
         if (value is String) || (value is NSString) {
             result = "\(key) \(type.rawValue) '\(value)'"
@@ -170,7 +170,7 @@ extension SwCtDB {
     ///   - key: 键
     ///   - value: 值
     /// - Returns: 设置表达式字符串
-    func set(_ key: String, _ value: Any) -> String {
+    public func set(_ key: String, _ value: Any) -> String {
         var result = "\(key) = \(value)";
         if (value is String) || (value is NSString) {
             result = "\(key) = '\(value)'"
@@ -184,7 +184,7 @@ extension SwCtDB {
     ///   - key: 键
     ///   - type: 排序类型
     /// - Returns: 排序表达式字符串
-    func ord(_ key: String, _ type: OrderType) -> String {
+    public func ord(_ key: String, _ type: OrderType) -> String {
         return "\(key) \(type.rawValue)"
     }
     
@@ -192,7 +192,7 @@ extension SwCtDB {
     ///
     /// - Parameter datas: 待插入的数据源
     /// - Returns: 是否插入成功
-    @discardableResult func insert(_ datas: [CtTable]) -> Bool {
+    @discardableResult public func insert(_ datas: [CtTable]) -> Bool {
         var result = true
         if datas.count > 0 {
             if createTable(datas.first!.classForCoder) {
@@ -258,7 +258,7 @@ extension SwCtDB {
     ///   - cla: 类
     ///   - cons: 条件表达式组
     /// - Returns: 是否删除成功
-    @discardableResult func delete(_ cla: AnyClass, cons: [String]? = nil) -> Bool {
+    @discardableResult public func delete(_ cla: AnyClass, cons: [String]? = nil) -> Bool {
         var result = false
         if createTable(cla) {
             var sql = "delete from \(String(describing:cla))";
@@ -279,7 +279,7 @@ extension SwCtDB {
     ///   - sets: 设置表达式组
     ///   - cons: 条件表达式组
     /// - Returns: 是否更新成功
-    @discardableResult func update(_ cla: AnyClass,  sets: [String], cons: [String]? = nil) -> Bool {
+    @discardableResult public func update(_ cla: AnyClass,  sets: [String], cons: [String]? = nil) -> Bool {
         var result = false
         if createTable(cla) {
             var sql = "update \(String(describing:cla))";
@@ -304,7 +304,7 @@ extension SwCtDB {
     ///   - cons: 条件表达式组
     ///   - ords: 排序表达式组
     /// - Returns: 查询出来的数据
-    @discardableResult func select(_ cla: AnyClass, keys: [String]? = nil, cons: [String]? = nil, ords: [String]? = nil) -> [CtTable] {
+    @discardableResult public func select(_ cla: AnyClass, keys: [String]? = nil, cons: [String]? = nil, ords: [String]? = nil) -> [CtTable] {
         var datas: [CtTable] = []
         if createTable(cla) {
             var key = "*"
@@ -361,11 +361,11 @@ extension SwCtDB {
 }
 
 // MARK: - 表基准数据相关
-extension SwCtDB {
+public extension SwCtDB {
     /// 获取所有表名
     ///
     /// - Returns: 表名列表
-    func exportTableNames() -> [String] {
+    public func exportTableNames() -> [String] {
         var tableNames: [String] = []
         if self.open() {
             let sql = "select name from sqlite_master where name != 'sqlite_sequence'";
@@ -385,7 +385,7 @@ extension SwCtDB {
     ///
     /// - Parameter cla: 类
     /// - Returns: 列名列表
-    func exportTableColumns(_ cla: AnyClass) -> [String] {
+    public func exportTableColumns(_ cla: AnyClass) -> [String] {
         var columns: [String] = []
         if self.open() {
             let sql = "PRAGMA table_info([\(String(describing:cla))])"
@@ -490,11 +490,9 @@ extension SwCtDB {
 }
 
 /// 表基本类，请创建数据表时继承该类，该类创建了id字段
-@objcMembers class CtTable: NSObject {
+@objcMembers public class CtTable: NSObject {
     var iD = 0
     
-    required override init() {
-        
-    }
+    required override init() {}
 }
 
