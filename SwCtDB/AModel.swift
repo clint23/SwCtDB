@@ -8,18 +8,21 @@
 
 import UIKit
 
-class AModel: CtTable {
-    var name = ""
-    var age = 0
+class AModel: NSObject {
+    @objc var name = ""
+    @objc var age = 0
     
     init(name: String, age: Int) {
+        super.init()
         self.name = name
         self.age = age
     }
-    
-    required init() {}
 
+//    override init() {
+//        super.init()
+//    }
+    
     override var description: String {
-        return "\(name) \(age)"
+        return "\(name) \(age) \(iD)"
     }
 }

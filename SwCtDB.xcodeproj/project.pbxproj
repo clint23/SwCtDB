@@ -14,6 +14,8 @@
 		F429A38820C0D4C600E5A50D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F429A38620C0D4C600E5A50D /* LaunchScreen.storyboard */; };
 		F429A39120C0D56400E5A50D /* SwCtDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = F429A39020C0D56400E5A50D /* SwCtDB.swift */; };
 		F429A39320C0D9C400E5A50D /* AModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F429A39220C0D9C400E5A50D /* AModel.swift */; };
+		F48258612176CFBF009FE3F9 /* BModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48258602176CFBF009FE3F9 /* BModel.swift */; };
+		F48439F921761604009DF9D8 /* NSObject+DBExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F48439F821761604009DF9D8 /* NSObject+DBExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		F429A38920C0D4C600E5A50D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F429A39020C0D56400E5A50D /* SwCtDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwCtDB.swift; sourceTree = "<group>"; };
 		F429A39220C0D9C400E5A50D /* AModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AModel.swift; sourceTree = "<group>"; };
+		F48258602176CFBF009FE3F9 /* BModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BModel.swift; sourceTree = "<group>"; };
+		F48439F821761604009DF9D8 /* NSObject+DBExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+DBExtension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +65,7 @@
 				F429A38F20C0D53A00E5A50D /* SwCtDB */,
 				F429A37D20C0D4C200E5A50D /* AppDelegate.swift */,
 				F429A39220C0D9C400E5A50D /* AModel.swift */,
+				F48258602176CFBF009FE3F9 /* BModel.swift */,
 				F429A37F20C0D4C200E5A50D /* ViewController.swift */,
 				F429A38120C0D4C200E5A50D /* Main.storyboard */,
 				F429A38420C0D4C600E5A50D /* Assets.xcassets */,
@@ -74,6 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				F429A39020C0D56400E5A50D /* SwCtDB.swift */,
+				F48439F821761604009DF9D8 /* NSObject+DBExtension.swift */,
 			);
 			path = SwCtDB;
 			sourceTree = "<group>";
@@ -152,6 +158,8 @@
 				F429A39120C0D56400E5A50D /* SwCtDB.swift in Sources */,
 				F429A39320C0D9C400E5A50D /* AModel.swift in Sources */,
 				F429A38020C0D4C200E5A50D /* ViewController.swift in Sources */,
+				F48439F921761604009DF9D8 /* NSObject+DBExtension.swift in Sources */,
+				F48258612176CFBF009FE3F9 /* BModel.swift in Sources */,
 				F429A37E20C0D4C200E5A50D /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

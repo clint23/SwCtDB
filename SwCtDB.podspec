@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name         = "SwCtDB"
-  s.version      = "0.0.6"
+  s.version      = "0.0.7"
   s.summary      = "一个Swift版的Sqlite操作库"
   s.homepage     = "https://github.com/clint23/SwCtDB"
   s.license      = { :type => "Apache License, Version 2.0", :file => "LICENSE" }

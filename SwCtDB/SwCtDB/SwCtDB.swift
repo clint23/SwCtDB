@@ -82,7 +82,7 @@ public func ord(_ key: String, _ type: OrderType) -> String {
 /// 创建的模型类需要继承于CtTable
 public class SwCtDB: NSObject {
     private static let instance = SwCtDB()
-    let id = "_id"
+    public static let id = "_id"
     private static let tableSign = "tableSign"
     private let tmpTableName = "tmp"
     private var tableColumns: [String : [String : ColumnType]] = [:]
@@ -135,7 +135,7 @@ public extension SwCtDB {
         var result = true
         if !tableColumns.keys.contains(tName(cla)) {
             let properties = self.exportProperties(cla)
-            let sql = "create table if not exists \(tName(cla)) (\(id) integer primary key autoincrement, \((properties as NSArray).componentsJoined(by: ", ")))"
+            let sql = "create table if not exists \(tName(cla)) (\(SwCtDB.id) integer primary key autoincrement, \((properties as NSArray).componentsJoined(by: ", ")))"
             result = (sqlite3_exec(db, sql, nil, nil, nil) == SQLITE_OK)
             if result {
                 tableColumns[tName(cla)] = exportPropertiesAndTypes(cla)
@@ -185,7 +185,7 @@ extension SwCtDB {
     ///
     /// - Parameter datas: 待插入的数据源
     /// - Returns: 是否插入成功
-    @discardableResult public func insert(_ datas: [CtTable]) -> Bool {
+    @discardableResult public func insert(_ datas: [NSObject]) -> Bool {
         var result = true
         if datas.count > 0 {
             if createTable(datas.first!.classForCoder) {
@@ -297,7 +297,7 @@ extension SwCtDB {
     ///   - cons: 条件表达式组
     ///   - ords: 排序表达式组
     /// - Returns: 查询出来的数据
-    @discardableResult public func select<T: CtTable>(_ cla: T.Type, keys: [String]? = nil, cons: [String]? = nil, ords: [String]? = nil) -> [T] {
+    @discardableResult public func select<T: NSObject>(_ cla: T.Type, keys: [String]? = nil, cons: [String]? = nil, ords: [String]? = nil) -> [T] {
         var datas: [T] = []
         if createTable(cla) {
             var key = "*"
@@ -318,7 +318,6 @@ extension SwCtDB {
             var stmt = OpaquePointer.init(bitPattern: 0)
             if sqlite3_prepare_v2(db, sql, -1, &stmt, nil) == SQLITE_OK {
                 var each = tableColumns[tName(cla)]
-                each!["iD"] = .integer
                 var indexs: [String : CInt] = [:]
                 while (sqlite3_step(stmt) == SQLITE_ROW) {
                     let tmp = T.init()
@@ -327,10 +326,8 @@ extension SwCtDB {
                         for index in 0..<columnNum {
                             indexs[String.init(cString: sqlite3_column_name(stmt, index))] = index
                         }
-                        indexs["iD"] = indexs["_id"]
-                        indexs["_id"] = nil
                     }
-                    let columns = indexs.keys
+                    let columns = indexs.keys.filter{ $0 != "_id" }
                     columns.enumerated().forEach { (offset, element) in
                         let type = each![element]!
                         switch type {
@@ -344,6 +341,7 @@ extension SwCtDB {
                             break
                         }
                     }
+                    tmp.iD = Int(sqlite3_column_int(stmt, indexs["_id"]!))
                     datas.append(tmp)
                 }
             }
@@ -400,7 +398,7 @@ public extension SwCtDB {
         let columns = exportTableColumns(cla)
         var properties = exportProperties(cla)
         var propertiesAndTypes = exportPropertiesAndTypes(cla)
-        properties.append(id)
+        properties.append(SwCtDB.id)
         
         let addColumns = (properties as NSArray).filtered(using: NSPredicate.init(format: "NOT (SELF IN %@)", columns)) as! [String]
         addColumns.forEach { (column) in
@@ -477,8 +475,8 @@ extension SwCtDB {
     /// - Returns: 转换后的类型
     func transToColumnType(_ base: String) -> ColumnType {
         var type = ColumnType.blob
-        let baseTypes = ["T@\"NSString\"", "Td", "Tf", "Tq"]
-        let transTypes: [ColumnType] = [.text, .real, .real, .integer]
+        let baseTypes = ["T@\"NSString\"", "Td", "Tf", "Tq", "TB"]
+        let transTypes: [ColumnType] = [.text, .real, .real, .integer, .integer]
         for index in 0..<baseTypes.count {
             if base.hasPrefix(baseTypes[index]) {
                 type = transTypes[index]
@@ -487,11 +485,5 @@ extension SwCtDB {
         }
         return type
     }
-}
-
-/// 表基本类，请创建数据表时继承该类，该类创建了id字段
-@objcMembers open class CtTable: NSObject {
-    public var iD = 0
-    required override public init() {}
 }
 
