@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.platform     = :ios, "8.0"
   s.source       = { :git => "https://github.com/clint23/SwCtDB.git", :tag => "#{s.version}" }
   s.swift_version = '4.1'
-  s.source_files  = "SwCtDB/SwCtDB/SwCtDB.swift"
+  s.source_files  = "SwCtDB/SwCtDB/*.swift"
   s.framework  = "UIKit"
   s.library   = "sqlite3"
   s.requires_arc = true
