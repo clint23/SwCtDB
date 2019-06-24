@@ -25,6 +25,6 @@ class BModel: NSObject {
     }
     
     override var description: String {
-        return "\(name) \(age) \(isnew) \(iD)"
+        return "\(name) \(age) \(isnew) "
     }
 }

@@ -8,14 +8,14 @@
 
 Pod::Spec.new do |s|
   s.name         = "SwCtDB"
-  s.version      = "0.0.7"
+  s.version      = "0.0.8"
   s.summary      = "一个Swift版的Sqlite操作库"
   s.homepage     = "https://github.com/clint23/SwCtDB"
   s.license      = { :type => "Apache License, Version 2.0", :file => "LICENSE" }
   s.author             = { "clint" => "3243629382@qq.com" }
   s.platform     = :ios, "8.0"
   s.source       = { :git => "https://github.com/clint23/SwCtDB.git", :tag => "#{s.version}" }
-  s.swift_version = '4.1'
+  s.swift_version = '5.0'
   s.source_files  = "SwCtDB/SwCtDB/*.swift"
   s.framework  = "UIKit"
   s.library   = "sqlite3"

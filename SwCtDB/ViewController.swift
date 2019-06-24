@@ -8,6 +8,12 @@
 
 import UIKit
 
+
+enum CEnum {
+    case normal
+    case other
+}
+
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
@@ -15,8 +21,17 @@ class ViewController: UIViewController {
     }
 
 
+    
+    
     @IBAction func createTable(_ sender: UIButton) {
-        
+//        var cmodel = CModel.init()
+//        
+//        var array = [1, 2, 3, 4, 5]
+//        var arrayPtr = UnsafeMutableBufferPointer<Int>(start: &array, count: array.count)
+//        // baseAddress 是第一个元素的指针
+//        var basePtr = arrayPtr.baseAddress
+//        basePtr?.pointee = 10
+//        print(array)
     }
     
     @IBAction func dropTable(_ sender: UIButton) {

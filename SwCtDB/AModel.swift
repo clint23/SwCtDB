@@ -23,6 +23,6 @@ class AModel: NSObject {
 //    }
     
     override var description: String {
-        return "\(name) \(age) \(iD)"
+        return "\(name) \(age) "
     }
 }

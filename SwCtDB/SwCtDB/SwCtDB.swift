@@ -148,7 +148,7 @@ public extension SwCtDB {
     ///
     /// - Parameter table: 表名
     /// - Returns: 是否成功删除表
-    @discardableResult public func dropTable(_ table: String) -> Bool {
+    @discardableResult func dropTable(_ table: String) -> Bool {
         let sql = "drop table if exists \(table)"
         return (sqlite3_exec(db, sql, nil, nil, nil) == SQLITE_OK)
     }
@@ -160,7 +160,7 @@ public extension SwCtDB {
     ///   - columns: 列名列表
     ///   - to: 要拷贝为的表名
     /// - Returns: 是否成功拷贝表
-    @discardableResult public func copyTable(_ from: String, columns: [String], to: String) -> Bool {
+    @discardableResult func copyTable(_ from: String, columns: [String], to: String) -> Bool {
         let sql = "create table \(to) as select \((columns as NSArray).componentsJoined(by: ", ")) from \(from)"
         
         return (sqlite3_exec(db, sql, nil, nil, nil) == SQLITE_OK)
@@ -172,7 +172,7 @@ public extension SwCtDB {
     ///   - from: 待重命名的表名
     ///   - to: 新命名
     /// - Returns: 是否成功重命名表
-    @discardableResult public func renameTable(_ from: String, to: String) -> Bool {
+    @discardableResult func renameTable(_ from: String, to: String) -> Bool {
         let sql = "alter table \(from) rename to \(to)"
         return (sqlite3_exec(db, sql, nil, nil, nil) == SQLITE_OK)
     }
@@ -201,13 +201,13 @@ extension SwCtDB {
                 each?.forEach({ (key, type) in
                     switch type {
                     case .text:
-                        texts[key] = columns.index(of: key)! + 1
+                        texts[key] = columns.firstIndex(of: key)! + 1
                     case .real:
-                        reals[key] = columns.index(of: key)! + 1
+                        reals[key] = columns.firstIndex(of: key)! + 1
                     case .integer:
-                        integets[key] = columns.index(of: key)! + 1
+                        integets[key] = columns.firstIndex(of: key)! + 1
                     default:
-                        blobs[key] = columns.index(of: key)! + 1
+                        blobs[key] = columns.firstIndex(of: key)! + 1
                     }
                     places += ",?"
                 })
@@ -341,7 +341,6 @@ extension SwCtDB {
                             break
                         }
                     }
-                    tmp.iD = Int(sqlite3_column_int(stmt, indexs["_id"]!))
                     datas.append(tmp)
                 }
             }
@@ -356,7 +355,7 @@ public extension SwCtDB {
     /// 获取所有表名
     ///
     /// - Returns: 表名列表
-    public func exportTableNames() -> [String] {
+    func exportTableNames() -> [String] {
         var tableNames: [String] = []
         if self.open() {
             let sql = "select name from sqlite_master where name != 'sqlite_sequence'";
@@ -376,7 +375,7 @@ public extension SwCtDB {
     ///
     /// - Parameter cla: 类
     /// - Returns: 列名列表
-    public func exportTableColumns(_ cla: AnyClass) -> [String] {
+    func exportTableColumns(_ cla: AnyClass) -> [String] {
         var columns: [String] = []
         if self.open() {
             let sql = "PRAGMA table_info([\(tName(cla))])"
